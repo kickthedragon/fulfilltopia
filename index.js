@@ -4,8 +4,10 @@ var fftopiaSDK = module.exports = function(rhu, username, password, handler) {
 	this.username = username;
 	this.password = password;
 	this.responseHandler = handler || function() {};
-	this.client = soap.createClient('https://' + rhu + '.veracore.com/pmomsws/oms.asmx');
-	this.client.setSecurity(new soap.BasicAuthSecurity(this.username, this.password));
+	this.client = soap.createClient('https://' + rhu + '.veracore.com/pmomsws/oms.asmx', (err, client) => {
+		console.log(err, client);
+		client.setSecurity(new soap.BasicAuthSecurity(this.username, this.password));
+	});
 };
 
 // fftopiaSDK.prototype.methodCaller = function(service, data, callback) {
