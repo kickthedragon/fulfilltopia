@@ -1,6 +1,6 @@
 {
   "name": "fulfilltopia",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Fulfilltopia Soap SDK for Node.js",
   "main": "index.js",
   "dependencies": {

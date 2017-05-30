@@ -1,4 +1,5 @@
-var soap = require('strong-soap');
+var soap = require('strong-soap')
+	.soap;
 
 var fftopiaSDK = module.exports = function(rhu, username, password, handler) {
 	this.username = username;
