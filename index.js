@@ -1,6 +1,5 @@
-'use strict';
-import xmlrpc from 'xmlrpc';
-import types from './lib/types';
+var xmlrpc = require('xmlrpc');
+var types = require('./lib/types');
 
 var fftopiaSDK = module.exports = function(rhu, username, password, handler) {
 	this.username = username;
