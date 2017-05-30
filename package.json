@@ -1,10 +1,10 @@
 {
   "name": "fulfilltopia",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Fulfilltopia Soap SDK for Node.js",
   "main": "index.js",
   "dependencies": {
-    "soap": "*"
+    "strong-soap": "*"
   },
   "homepage": "https://github.com/kickthedragon/fulfilltopia",
   "engines": {

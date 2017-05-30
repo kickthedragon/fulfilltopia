@@ -1,12 +1,12 @@
-var soap = require('soap');
+var soap = require('strong-soap');
 
 var fftopiaSDK = module.exports = function(rhu, username, password, handler) {
 	this.username = username;
 	this.password = password;
 	this.responseHandler = handler || function() {};
-	this.client = soap.createClient('https://' + rhu + '.veracore.com/pmomsws/oms.asmx', (err, client) => {
-		console.log(err, client);
+	soap.createClient('https://' + rhu + '.veracore.com/pmomsws/oms.asmx?WSDL', (err, client) => {
 		client.setSecurity(new soap.BasicAuthSecurity(this.username, this.password));
+		this.client = client;
 	});
 };
 
