@@ -34,14 +34,15 @@ var fftopiaSDK = module.exports = function(rhu, username, password, debug, handl
 };
 
 fftopiaSDK.prototype.addOrder = function(cMap, callback) {
+	var re = this.debug ? 'AddOrder' : '';
 	request({
 		method: 'POST',
 		uri: this.uri,
-		body: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><soapenv:Envelope xmlns:soapenv="http://www.w3.org/2003/05/soap-envelope">\
+		body: '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:oms ="http://omscom/">\
 		  <soapenv:Header>\
 		    <DebugHeader>\
 		      <Debug>' + this.debug + '</Debug>\
-		      <Request>AddOrder</Request>\
+		      <Request>' + re + '</Request>\
 		    </DebugHeader>\
 		    <AuthenticationHeader>\
 		      <Username>' + this.username + '</Username>\
