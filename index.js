@@ -1,29 +1,3 @@
-// var soap = require('strong-soap')
-// 	.soap;
-//
-// var fftopiaSDK = module.exports = function(rhu, username, password, handler) {
-// 	this.username = username;
-// 	this.password = password;
-// 	this.responseHandler = handler || function() {};
-// 	var options = {
-// 		envelopeKey: 'soapenv',
-// 	};
-// 	soap.createClient('https://' + rhu + '.veracore.com/pmomsws/oms.asmx?WSDL', options, (err, client) => {
-// 		client.setSecurity(new soap.BasicAuthSecurity(this.username, this.password));
-// 		var authHeaders = {
-// 			AuthenticationHeader: {
-// 				Username: this.username,
-// 				Password: this.password
-// 			}
-// 		};
-// 		client.addSoapHeader(authHeaders);
-// 		this.client = client;
-// 	});
-// };
-//
-// fftopiaSDK.prototype.addOrder = function(cMap, callback) {
-// 	this.client.AddOrder(cMap, callback);
-// };
 var request = require('request');
 var fftopiaSDK = module.exports = function(rhu, username, password, debug, handler) {
 	this.username = username;
@@ -32,6 +6,36 @@ var fftopiaSDK = module.exports = function(rhu, username, password, debug, handl
 	this.responseHandler = handler || function() {};
 	this.debug = debug;
 };
+
+fftopiaSDK.prototype.getOrder = function(orderId, callback) {
+	var re = this.debug ? 'GetOrderInfo' : '';
+	request({
+		method: 'POST',
+		headers: {
+			'SOAPAction': 'http://omscom/GetOrderInfo',
+			'Content-Type': 'text/xml; charset=utf-8'
+		},
+		uri: this.uri,
+		body: '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:oms ="http://omscom/">\
+		  <soapenv:Header>\
+		    <DebugHeader>\
+		      <Debug>' + this.debug + '</Debug>\
+		      <Request>' + re + '</Request>\
+		    </DebugHeader>\
+		    <AuthenticationHeader>\
+		      <Username>' + this.username + '</Username>\
+		      <Password>' + this.password + '</Password>\
+		    </AuthenticationHeader>\
+		  </soapenv:Header>\
+			<soapenv:Body>\
+			<GetOrderInfo>\
+			<orderId>' + orderId + '</orderId>\
+			</GetOrderInfo>\
+			</soapenv:Body>\
+			</soapenv:Envelope>'
+	}, callback);
+};
+
 
 fftopiaSDK.prototype.addOrder = function(cMap, callback) {
 	var re = this.debug ? 'AddOrder' : '';
@@ -57,11 +61,18 @@ fftopiaSDK.prototype.addOrder = function(cMap, callback) {
 		    <AddOrder>\
 		      <order>\
 		        <Header>\
-		          <ID>12345678</ID>\
-		          <EntryDate>2017-06-01T16:09:41.098Z</EntryDate>\
+		          <ID>1234-567</ID>\
+		          <EntryDate>2017-06-01T16:09:41</EntryDate>\
+							<OrderEntryView>\
+								<Description>128981</Description>\
+							</OrderEntryView>\
+							<ReferenceNumber>123</ReferenceNumber>\
+							<PONumber>456</PONumber>\
 		          <Comments>Testing</Comments>\
-		          <InsertDate>2017-06-01T16:09:41.098Z</InsertDate>\
-		          <UTCEntryDate>2017-06-01T16:09:41.098Z</UTCEntryDate>\
+							<IpAddress></IpAddress>\
+							<ApprovalComments></ApprovalComments>\
+		          <InsertDate>2017-06-01T16:09:41</InsertDate>\
+		          <UTCEntryDate>2017-06-01T16:09:41</UTCEntryDate>\
 		        </Header>\
 		        <Classification>\
 		          <CustomerProject>\
@@ -75,57 +86,65 @@ fftopiaSDK.prototype.addOrder = function(cMap, callback) {
 		          <ShippingHandlingCharge>0</ShippingHandlingCharge>\
 		          <RushHandlingCharge>0</RushHandlingCharge>\
 		        </Money>\
+						<OrderVariables>\
+							<OrderVariable>\
+								<VariableField>\
+									<FieldName>Pick/Pack?</FieldName>\
+								</VariableField>\
+								<Value>yes</Value>\
+							</OrderVariable>\
+						</OrderVariables>\
 		        <OrderedBy>\
-		          <Prefix/>\
+		          <Prefix></Prefix>\
 		          <FirstName>John</FirstName>\
-		          <MiddleInitial/>\
+		          <MiddleInitial></MiddleInitial>\
 		          <LastName>Doe</LastName>\
-		          <Suffix/>\
-		          <CompanyName/>\
-		          <Title/>\
+		          <Suffix></Suffix>\
+		          <CompanyName></CompanyName>\
+		          <Title></Title>\
 		          <Address1>1234 Wood Dr</Address1>\
-		          <Address2/>\
-		          <Address3/>\
+		          <Address2></Address2>\
+		          <Address3></Address3>\
 		          <City>Woohooo</City>\
 		          <State>ZA</State>\
 		          <PostalCode>000000</PostalCode>\
 		          <Country>US</Country>\
 		          <Phone>5555555555</Phone>\
-		          <Fax/>\
+		          <Fax></Fax>\
 		          <Email>blaaaah@gmail.com</Email>\
 		          <UID>TL123</UID>\
 		          <TaxExempt>false</TaxExempt>\
-		          <TaxExemptID/>\
+		          <TaxExemptID></TaxExemptID>\
 		          <TaxExemptApproved>false</TaxExemptApproved>\
 		          <Commercial>false</Commercial>\
 		        </OrderedBy>\
 		        <ShipTo>\
 		          <OrderShipTo>\
-		            <Prefix/>\
-		            <FirstName>John</FirstName>\
-		            <MiddleInitial/>\
-		            <LastName>Doe</LastName>\
-		            <Suffix/>\
-		            <CompanyName/>\
-		            <Title/>\
-		            <Address1>1234 Wood Dr</Address1>\
-		            <Address2/>\
-		            <Address3/>\
-		            <City>Woohooo</City>\
-		            <State>ZA</State>\
-		            <PostalCode>000000</PostalCode>\
-		            <Country>US</Country>\
-		            <Phone>5555555555</Phone>\
-		            <Fax/>\
-		            <Email>blaaaah@gmail.com</Email>\
-		            <UID>TL123</UID>\
-		            <TaxExempt>false</TaxExempt>\
-		            <TaxExemptID/>\
-		            <TaxExemptApproved>false</TaxExemptApproved>\
-		            <Commercial>false</Commercial>\
+							 <Prefix></Prefix>\
+	 						 <FirstName>John</FirstName>\
+	 						 <MiddleInitial></MiddleInitial>\
+	 						 <LastName>Doe</LastName>\
+	 						 <Suffix></Suffix>\
+	 						 <CompanyName></CompanyName>\
+	 						 <Title></Title>\
+	 						 <Address1>1234 Wood Dr</Address1>\
+	 						 <Address2></Address2>\
+	 						 <Address3></Address3>\
+	 						 <City>Woohooo</City>\
+	 						 <State>ZA</State>\
+	 						 <PostalCode>000000</PostalCode>\
+	 						 <Country>US</Country>\
+	 						 <Phone>5555555555</Phone>\
+	 						 <Fax></Fax>\
+	 						 <Email>blaaaah@gmail.com</Email>\
+	 						 <UID>TL123</UID>\
+	 						 <TaxExempt>false</TaxExempt>\
+	 						 <TaxExemptID></TaxExemptID>\
+	 						 <TaxExemptApproved>false</TaxExemptApproved>\
+	 						 <Commercial>false</Commercial>\
 		            <Flag>Other</Flag>\
 		            <Key>0</Key>\
-		            <NeededBy/>\
+		            <NeededBy></NeededBy>\
 		            <ReleaseDate>2017-06-01T16:09:41.098Z</ReleaseDate>\
 		            <Rush>false</Rush>\
 		            <RushHandling>0</RushHandling>\
@@ -138,7 +157,7 @@ fftopiaSDK.prototype.addOrder = function(cMap, callback) {
 		            </FreightService>\
 		            <ThirdPartyType>3</ThirdPartyType>\
 		            <ThirdPartyAccountNumber>123456</ThirdPartyAccountNumber>\
-		            <FreightCode/>\
+		            <FreightCode></FreightCode>\
 		            <FreightCodeDescription/>\
 		            <SpecialHandling>\
 		              <Description>UPS Ground</Description>\
@@ -147,7 +166,7 @@ fftopiaSDK.prototype.addOrder = function(cMap, callback) {
 		        </ShipTo>\
 		        <BillTo>\
 		          <TaxExempt>false</TaxExempt>\
-		          <TaxExemptID/>\
+		          <TaxExemptID></TaxExemptID>\
 		          <TaxExemptApproved>false</TaxExemptApproved>\
 		          <Commercial>false</Commercial>\
 		        </BillTo>\
