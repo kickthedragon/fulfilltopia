@@ -37,6 +37,10 @@ fftopiaSDK.prototype.addOrder = function(cMap, callback) {
 	var re = this.debug ? 'AddOrder' : '';
 	request({
 		method: 'POST',
+		headers: {
+			'SOAPAction': 'http://omscom/AddOrder',
+			'Content-Type': 'text/xml; charset=utf-8'
+		},
 		uri: this.uri,
 		body: '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:oms ="http://omscom/">\
 		  <soapenv:Header>\
