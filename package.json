@@ -5,7 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "strong-soap": "*",
-    "node-soap": "*"
+    "soap": "*"
   },
   "homepage": "https://github.com/kickthedragon/fulfilltopia",
   "engines": {
