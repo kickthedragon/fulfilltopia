@@ -24,31 +24,147 @@
 // fftopiaSDK.prototype.addOrder = function(cMap, callback) {
 // 	this.client.AddOrder(cMap, callback);
 // };
-var soap = require('soap');
-var fftopiaSDK = module.exports = function(rhu, username, password, handler) {
+var request = require('request');
+var fftopiaSDK = module.exports = function(rhu, username, password, debug, handler) {
 	this.username = username;
 	this.password = password;
+	this.uri = 'https://' + rhu + '.veracore.com/pmomsws/oms.asmx';
 	this.responseHandler = handler || function() {};
-	var options = {
-		envelopeKey: 'soapenv',
-	};
-	soap.createClient('https://' + rhu + '.veracore.com/pmomsws/oms.asmx?WSDL', options, (err, client) => {
-		client.setSecurity(new soap.BasicAuthSecurity(this.username, this.password));
-		var customHeaders = {
-			DebugHeader: {
-				Debug: false,
-				Request: ''
-			},
-			AuthenticationHeader: {
-				Username: this.username,
-				Password: this.password
-			}
-		};
-		client.addSoapHeader(customHeaders);
-		this.client = client;
-	});
+	this.debug = debug;
 };
 
 fftopiaSDK.prototype.addOrder = function(cMap, callback) {
-	this.client.AddOrder(cMap, callback);
+	request({
+		method: 'POST',
+		uri: this.uri,
+		body: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><soapenv:Envelope xmlns:soapenv="http://www.w3.org/2003/05/soap-envelope">\
+		  <soapenv:Header>\
+		    <DebugHeader>\
+		      <Debug>' + this.debug + '</Debug>\
+		      <Request>AddOrder</Request>\
+		    </DebugHeader>\
+		    <AuthenticationHeader>\
+		      <Username>' + this.username + '</Username>\
+		      <Password>' + this.password + '</Password>\
+		    </AuthenticationHeader>\
+		  </soapenv:Header>\
+		  <soapenv:Body>\
+		    <AddOrder>\
+		      <order>\
+		        <Header>\
+		          <ID>12345678</ID>\
+		          <EntryDate>2017-06-01T16:09:41.098Z</EntryDate>\
+		          <Comments>Testing</Comments>\
+		          <InsertDate>2017-06-01T16:09:41.098Z</InsertDate>\
+		          <UTCEntryDate>2017-06-01T16:09:41.098Z</UTCEntryDate>\
+		        </Header>\
+		        <Classification>\
+		          <CustomerProject>\
+		            <ID>AGHARD</ID>\
+		          </CustomerProject>\
+		        </Classification>\
+		        <Money>\
+		          <PriceClass>\
+		            <Description>Default</Description>\
+		          </PriceClass>\
+		          <ShippingHandlingCharge>0</ShippingHandlingCharge>\
+		          <RushHandlingCharge>0</RushHandlingCharge>\
+		        </Money>\
+		        <OrderedBy>\
+		          <Prefix/>\
+		          <FirstName>John</FirstName>\
+		          <MiddleInitial/>\
+		          <LastName>Doe</LastName>\
+		          <Suffix/>\
+		          <CompanyName/>\
+		          <Title/>\
+		          <Address1>1234 Wood Dr</Address1>\
+		          <Address2/>\
+		          <Address3/>\
+		          <City>Woohooo</City>\
+		          <State>ZA</State>\
+		          <PostalCode>000000</PostalCode>\
+		          <Country>US</Country>\
+		          <Phone>5555555555</Phone>\
+		          <Fax/>\
+		          <Email>blaaaah@gmail.com</Email>\
+		          <UID>TL123</UID>\
+		          <TaxExempt>false</TaxExempt>\
+		          <TaxExemptID/>\
+		          <TaxExemptApproved>false</TaxExemptApproved>\
+		          <Commercial>false</Commercial>\
+		        </OrderedBy>\
+		        <ShipTo>\
+		          <OrderShipTo>\
+		            <Prefix/>\
+		            <FirstName>John</FirstName>\
+		            <MiddleInitial/>\
+		            <LastName>Doe</LastName>\
+		            <Suffix/>\
+		            <CompanyName/>\
+		            <Title/>\
+		            <Address1>1234 Wood Dr</Address1>\
+		            <Address2/>\
+		            <Address3/>\
+		            <City>Woohooo</City>\
+		            <State>ZA</State>\
+		            <PostalCode>000000</PostalCode>\
+		            <Country>US</Country>\
+		            <Phone>5555555555</Phone>\
+		            <Fax/>\
+		            <Email>blaaaah@gmail.com</Email>\
+		            <UID>TL123</UID>\
+		            <TaxExempt>false</TaxExempt>\
+		            <TaxExemptID/>\
+		            <TaxExemptApproved>false</TaxExemptApproved>\
+		            <Commercial>false</Commercial>\
+		            <Flag>Other</Flag>\
+		            <Key>0</Key>\
+		            <NeededBy/>\
+		            <ReleaseDate>2017-06-01T16:09:41.098Z</ReleaseDate>\
+		            <Rush>false</Rush>\
+		            <RushHandling>0</RushHandling>\
+		            <Comments>Tests comments</Comments>\
+		            <FreightCarrier>\
+		              <Name>Freight Name</Name>\
+		            </FreightCarrier>\
+		            <FreightService>\
+		              <Description>Freight Service Description</Description>\
+		            </FreightService>\
+		            <ThirdPartyType>3</ThirdPartyType>\
+		            <ThirdPartyAccountNumber>123456</ThirdPartyAccountNumber>\
+		            <FreightCode/>\
+		            <FreightCodeDescription/>\
+		            <SpecialHandling>\
+		              <Description>UPS Ground</Description>\
+		            </SpecialHandling>\
+		          </OrderShipTo>\
+		        </ShipTo>\
+		        <BillTo>\
+		          <TaxExempt>false</TaxExempt>\
+		          <TaxExemptID/>\
+		          <TaxExemptApproved>false</TaxExemptApproved>\
+		          <Commercial>false</Commercial>\
+		        </BillTo>\
+		        <Offers>\
+		          <OfferOrdered>\
+		            <Offer>\
+		              <Header>\
+		                <ID>ZEPH-9999</ID>\
+		              </Header>\
+		            </Offer>\
+		            <Quantity>1</Quantity>\
+		            <OrderShipToKey>\
+		              <Key>0</Key>\
+		            </OrderShipToKey>\
+		            <PriceType>1</PriceType>\
+		            <UnitPrice>0</UnitPrice>\
+		            <ShippingHandling>0</ShippingHandling>\
+		            <Discounts>0</Discounts>\
+		          </OfferOrdered>\
+		        </Offers>\
+		      </order>\
+		    </AddOrder>\
+		  </soapenv:Body></soapenv:Envelope>'
+	}, callback);
 };
