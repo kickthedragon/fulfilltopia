@@ -16,29 +16,30 @@ fftopiaSDK.prototype.getOrder = function(orderId, callback) {
 			'Content-Type': 'text/xml; charset=utf-8'
 		},
 		uri: this.uri,
-		body: '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:oms ="http://omscom/">\
-		  <soapenv:Header>\
-		    <DebugHeader>\
-		      <Debug>' + this.debug + '</Debug>\
-		      <Request>' + re + '</Request>\
-		    </DebugHeader>\
-		    <AuthenticationHeader>\
-		      <Username>' + this.username + '</Username>\
-		      <Password>' + this.password + '</Password>\
-		    </AuthenticationHeader>\
-		  </soapenv:Header>\
-			<soapenv:Body>\
-			<GetOrderInfo>\
+		body: '<?xml version="1.0" encoding="utf-8"?>\
+		<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">\
+			<soap:Header>\
+				<DebugHeader xmlns="http://omscom/">\
+					<Debug>' + this.debug + '</Debug>\
+					<Request/>\
+					</DebugHeader>\
+								<AuthenticationHeader xmlns="http://omscom/">\
+									<Username>' + this.username + '</Username>\
+									<Password>' + this.password + '</Password>\
+								</AuthenticationHeader>\
+							</soap:Header>\
+			<soap:Body>\
+			<GetOrderInfo xmlns="http://omscom/">\
 			<orderId>' + orderId + '</orderId>\
 			</GetOrderInfo>\
-			</soapenv:Body>\
-			</soapenv:Envelope>'
+			</soap:Body>\
+			</soap:Envelope>'
 	}, callback);
 };
 
 
 fftopiaSDK.prototype.addOrder = function(cMap, callback) {
-	var re = this.debug ? 'AddOrder' : '';
+	var priceClass = cMap.priceClass ? cMap.priceClass : 'Default';
 	request({
 		method: 'POST',
 		headers: {
@@ -46,149 +47,140 @@ fftopiaSDK.prototype.addOrder = function(cMap, callback) {
 			'Content-Type': 'text/xml; charset=utf-8'
 		},
 		uri: this.uri,
-		body: '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:oms ="http://omscom/">\
-		  <soapenv:Header>\
-		    <DebugHeader>\
-		      <Debug>' + this.debug + '</Debug>\
-		      <Request>' + re + '</Request>\
-		    </DebugHeader>\
-		    <AuthenticationHeader>\
-		      <Username>' + this.username + '</Username>\
-		      <Password>' + this.password + '</Password>\
-		    </AuthenticationHeader>\
-		  </soapenv:Header>\
-		  <soapenv:Body>\
-		    <AddOrder>\
-		      <order>\
-		        <Header>\
-		          <ID>1234-567</ID>\
-		          <EntryDate>2017-06-01T16:09:41</EntryDate>\
-							<OrderEntryView>\
-								<Description>128981</Description>\
-							</OrderEntryView>\
-							<ReferenceNumber>123</ReferenceNumber>\
-							<PONumber>456</PONumber>\
-		          <Comments>Testing</Comments>\
-							<IpAddress></IpAddress>\
-							<ApprovalComments></ApprovalComments>\
-		          <InsertDate>2017-06-01T16:09:41</InsertDate>\
-		          <UTCEntryDate>2017-06-01T16:09:41</UTCEntryDate>\
-		        </Header>\
-		        <Classification>\
-		          <CustomerProject>\
-		            <ID>AGHARD</ID>\
-		          </CustomerProject>\
-		        </Classification>\
-		        <Money>\
-		          <PriceClass>\
-		            <Description>Default</Description>\
-		          </PriceClass>\
-		          <ShippingHandlingCharge>0</ShippingHandlingCharge>\
-		          <RushHandlingCharge>0</RushHandlingCharge>\
-		        </Money>\
-						<OrderVariables>\
-							<OrderVariable>\
-								<VariableField>\
-									<FieldName>Pick/Pack?</FieldName>\
-								</VariableField>\
-								<Value>yes</Value>\
-							</OrderVariable>\
-						</OrderVariables>\
-		        <OrderedBy>\
-		          <Prefix></Prefix>\
-		          <FirstName>John</FirstName>\
-		          <MiddleInitial></MiddleInitial>\
-		          <LastName>Doe</LastName>\
-		          <Suffix></Suffix>\
-		          <CompanyName></CompanyName>\
-		          <Title></Title>\
-		          <Address1>1234 Wood Dr</Address1>\
-		          <Address2></Address2>\
-		          <Address3></Address3>\
-		          <City>Woohooo</City>\
-		          <State>ZA</State>\
-		          <PostalCode>000000</PostalCode>\
-		          <Country>US</Country>\
-		          <Phone>5555555555</Phone>\
-		          <Fax></Fax>\
-		          <Email>blaaaah@gmail.com</Email>\
-		          <UID>TL123</UID>\
-		          <TaxExempt>false</TaxExempt>\
-		          <TaxExemptID></TaxExemptID>\
-		          <TaxExemptApproved>false</TaxExemptApproved>\
-		          <Commercial>false</Commercial>\
-		        </OrderedBy>\
-		        <ShipTo>\
-		          <OrderShipTo>\
-							 <Prefix></Prefix>\
-	 						 <FirstName>John</FirstName>\
-	 						 <MiddleInitial></MiddleInitial>\
-	 						 <LastName>Doe</LastName>\
-	 						 <Suffix></Suffix>\
-	 						 <CompanyName></CompanyName>\
-	 						 <Title></Title>\
-	 						 <Address1>1234 Wood Dr</Address1>\
-	 						 <Address2></Address2>\
-	 						 <Address3></Address3>\
-	 						 <City>Woohooo</City>\
-	 						 <State>ZA</State>\
-	 						 <PostalCode>000000</PostalCode>\
-	 						 <Country>US</Country>\
-	 						 <Phone>5555555555</Phone>\
-	 						 <Fax></Fax>\
-	 						 <Email>blaaaah@gmail.com</Email>\
-	 						 <UID>TL123</UID>\
-	 						 <TaxExempt>false</TaxExempt>\
-	 						 <TaxExemptID></TaxExemptID>\
-	 						 <TaxExemptApproved>false</TaxExemptApproved>\
-	 						 <Commercial>false</Commercial>\
-		            <Flag>Other</Flag>\
-		            <Key>0</Key>\
-		            <NeededBy></NeededBy>\
-		            <ReleaseDate>2017-06-01T16:09:41.098Z</ReleaseDate>\
-		            <Rush>false</Rush>\
-		            <RushHandling>0</RushHandling>\
-		            <Comments>Tests comments</Comments>\
-		            <FreightCarrier>\
-		              <Name>Freight Name</Name>\
-		            </FreightCarrier>\
-		            <FreightService>\
-		              <Description>Freight Service Description</Description>\
-		            </FreightService>\
-		            <ThirdPartyType>3</ThirdPartyType>\
-		            <ThirdPartyAccountNumber>123456</ThirdPartyAccountNumber>\
-		            <FreightCode></FreightCode>\
-		            <FreightCodeDescription/>\
-		            <SpecialHandling>\
-		              <Description>UPS Ground</Description>\
-		            </SpecialHandling>\
-		          </OrderShipTo>\
-		        </ShipTo>\
-		        <BillTo>\
-		          <TaxExempt>false</TaxExempt>\
-		          <TaxExemptID></TaxExemptID>\
-		          <TaxExemptApproved>false</TaxExemptApproved>\
-		          <Commercial>false</Commercial>\
-		        </BillTo>\
-		        <Offers>\
-		          <OfferOrdered>\
-		            <Offer>\
-		              <Header>\
-		                <ID>ZEPH-9999</ID>\
-		              </Header>\
-		            </Offer>\
-		            <Quantity>1</Quantity>\
-		            <OrderShipToKey>\
-		              <Key>0</Key>\
-		            </OrderShipToKey>\
-		            <PriceType>1</PriceType>\
-		            <UnitPrice>0</UnitPrice>\
-		            <ShippingHandling>0</ShippingHandling>\
-		            <Discounts>0</Discounts>\
-		          </OfferOrdered>\
-		        </Offers>\
-		      </order>\
-		    </AddOrder>\
-		  </soapenv:Body></soapenv:Envelope>'
+		body: '<?xml version="1.0" encoding="utf-8"?>\
+		<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">\
+			<soap:Header>\
+				<DebugHeader xmlns="http://omscom/">\
+					<Debug>' + this.debug + '</Debug>\
+					<Request/>\
+					</DebugHeader>\
+								<AuthenticationHeader xmlns="http://omscom/">\
+									<Username>' + this.username + '</Username>\
+									<Password>' + this.password + '</Password>\
+								</AuthenticationHeader>\
+							</soap:Header>\
+							<soap:Body>\
+								<AddOrder xmlns="http://omscom/">\
+									<order>\
+										<Header>\
+											<ID>' + cMap.orderId + '</ID>\
+											<EntryDate>' + new Date()
+			.toISOString() + '</EntryDate>\
+											<OrderEntryView>\
+												<Description></Description>\
+											</OrderEntryView>\
+											<ReferenceNumber>' + cMap.referenceNumber + '</ReferenceNumber>\
+											<PONumber>' + cMap.poNumber + '</PONumber>\
+											<Comments>' + cMap.comments + '</Comments>\
+											<IpAddress></IpAddress>\
+											<ApprovalComments>' + cMap.approvalComments + '</ApprovalComments>\
+											<InsertDate>' + new Date()
+			.toISOString() + '</InsertDate>\
+											<UTCEntryDate>' + new Date()
+			.toISOString() + '</UTCEntryDate>\
+										</Header>\
+										<Money>\
+											<PriceClass>\
+												<Description>' + priceClass + '</Description>\
+											</PriceClass>\
+											<ShippingHandlingCharge>' + cMap.shippingHandlingCharge + '</ShippingHandlingCharge>\
+											<RushHandlingCharge>' + cMap.rushHandlingCharge + '</RushHandlingCharge>\
+										</Money>\
+										<OrderVariables>\
+										</OrderVariables>\
+										<OrderedBy>\
+											<Prefix>' + cMap.orderByPrefix + '</Prefix>\
+											<FirstName>' + cMap.orderByFirstName + '</FirstName>\
+											<MiddleInitial>' + cMap.orderByMiddleInitial + '</MiddleInitial>\
+											<LastName>' + cMap.orderByLastName + '</LastName>\
+											<Suffix>' + cMap.orderBySuffix + '</Suffix>\
+											<CompanyName>' + cMap.orderByCompanyName + '</CompanyName>\
+											<Title>' + cMap.orderByTitle + '</Title>\
+											<Address1>' + cMap.orderByAddress1 + '</Address1>\
+											<Address2>' + cMap.orderByAddress2 + '</Address2>\
+											<Address3>' + cMap.orderByAddress3 + '</Address3>\
+											<City>' + cMap.orderByCity + '</City>\
+											<State>' + cMap.orderByState + '</State>\
+											<PostalCode>' + cMap.orderByPostalCode + '</PostalCode>\
+											<Country>' + cMap.orderByCountry + '</Country>\
+											<Phone>' + cMap.orderByPhone + '</Phone>\
+											<Fax>' + cMap.orderByFax + '</Fax>\
+											<Email>' + cMap.orderByEmail + '</Email>\
+											<UID>' + cMap.orderByUID + '</UID>\
+											<TaxExempt>' + cMap.orderByTaxExempt + '</TaxExempt>\
+											<TaxExemptID>' + cMap.orderByTaxExemptID + '</TaxExemptID>\
+											<TaxExemptApproved>' + cMap.orderByTaxExemptApproved + '</TaxExemptApproved>\
+											<Commercial>' + cMap.orderByCommercial + '</Commercial>\
+										</OrderedBy>\
+										<ShipTo>\
+											<OrderShipTo>\
+												<Prefix>' + cMap.shipToPrefix + '</Prefix>\
+												<FirstName>' + cMap.shipToFirstName + '</FirstName>\
+												<MiddleInitial>' + cMap.shipToMiddleInitial + '</MiddleInitial>\
+												<LastName>' + cMap.shipToLastName + '</LastName>\
+												<Suffix>' + cMap.shipToSuffix + '</Suffix>\
+												<CompanyName>' + cMap.shipToCompanyName + '</CompanyName>\
+												<Title>' + cMap.shipToTitle + '</Title>\
+												<Address1>' + cMap.shipToAddress1 + '</Address1>\
+												<Address2>' + cMap.shipToAddress2 + '</Address2>\
+												<Address3>' + cMap.shipToAddress3 + '</Address3>\
+												<City>' + cMap.shipToCity + '</City>\
+												<State>' + cMap.shipToState + '</State>\
+												<PostalCode>' + cMap.shipToPostalCode + '</PostalCode>\
+												<Country>' + cMap.shipToCountry + '</Country>\
+												<Phone>' + cMap.shipToPhone + '</Phone>\
+												<Fax>' + cMap.shipToFax + '</Fax>\
+												<Email>' + cMap.shipToEmail + '</Email>\
+												<UID>' + cMap.shipToUID + '</UID>\
+												<TaxExempt>' + cMap.shipToTaxExempt + '</TaxExempt>\
+												<TaxExemptID>' + cMap.shipToTaxExemptID + '</TaxExemptID>\
+												<TaxExemptApproved>' + cMap.shipToTaxExemptApproved + '</TaxExemptApproved>\
+												<Commercial>' + cMap.shipToCommercial + '</Commercial>\
+												<Flag>' + cMap.shipToFlag + '</Flag>\
+												<Key>' + cMap.shipToKey + '</Key>\
+												<NeededBy>' + cMap.shipToNeededBy + '</NeededBy>\
+												<ReleaseDate>' + cMap.shipToReleaseDate + '</ReleaseDate>\
+												<Rush>' + cMap.shipToRush + '</Rush>\
+												<RushHandling>' + cMap.shipToRushHandling + '</RushHandling>\
+												<Comments>' + cMap.shipToComments + '</Comments>\
+												<FreightCarrier>\
+													<Name>' + cMap.shipToFreightCarrier + '</Name>\
+												</FreightCarrier>\
+												<ThirdPartyType>' + cMap.shipToThirdPartyType + '</ThirdPartyType>\
+												<ThirdPartyAccountNumber>' + cMap.shipToThirdPartyAccountNummber + '</ThirdPartyAccountNumber>\
+												<FreightCode>' + cMap.shipToFreightCode + '</FreightCode>\
+												<FreightCodeDescription>' + cMap.shipToFreightCodeDescription + '</FreightCodeDescription>\
+												<SpecialHandling>\
+													<Description>' + cMap.shipToSpecialHandling + '</Description>\
+												</SpecialHandling>\
+											</OrderShipTo>\
+										</ShipTo>\
+										<BillTo>\
+											<TaxExempt>' + cMap.billToTaxExempt + '</TaxExempt>\
+											<TaxExemptID>' + cMap.billToTaxExemptID + '</TaxExemptID>\
+											<TaxExemptApproved>' + cMap.billToTaxExemptApproved + '</TaxExemptApproved>\
+											<Commercial>' + cMap.billToCommercial + '</Commercial>\
+										</BillTo>\
+										<Offers>\
+											<OfferOrdered>\
+												<Offer>\
+													<Header>\
+														<ID>' + cMap.offerID + '</ID>\
+													</Header>\
+												</Offer>\
+												<Quantity>' + cMap.quantity + '</Quantity>\
+												<OrderShipToKey>\
+													<Key>' + cMap.shipToKey + '</Key>\
+												</OrderShipToKey>\
+												<PriceType>' + cMap.priceType + '</PriceType>\
+												<UnitPrice>' + cMap.unitPrice + '</UnitPrice>\
+												<ShippingHandling>' + cMap.shippingHandling + '</ShippingHandling>\
+												<Discounts>' + cMap.discounts + '</Discounts>\
+											</OfferOrdered>\
+										</Offers>\
+									</order>\
+								</AddOrder>\
+							</soap:Body>\
+						</soap:Envelope>'
 	}, callback);
 };
