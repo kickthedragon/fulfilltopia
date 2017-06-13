@@ -157,7 +157,7 @@ fftopiaSDK.prototype.addOrder = function(cMap, callback) {
 
 	var offers = '';
 
-	for (var cnt = 0; cnt < = cMap.offers.length; cnt++) {
+	for (var cnt = 0; cnt <= cMap.offers.length; cnt++) {
 		offers += '<OfferOrdered>\
 					<Offer>\
 						<Header>\
