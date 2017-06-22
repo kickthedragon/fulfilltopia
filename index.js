@@ -36,13 +36,13 @@ fftopiaSDK.prototype.getOrder = function(orderId, callback) {
 			</GetOrderInfo>\
 			</soap:Body>\
 			</soap:Envelope>'
-	}, (err, result, body) => {
+	}, (err, request, body) => {
 		if (!err) {
 			parseString(body, (err, result) => {
-				return callback(err, result);
+				return callback(err, result['soap:Body']);
 			});
 		} else {
-			return callback(err, result, null);
+			return callback(err, request);
 		}
 	});
 };
