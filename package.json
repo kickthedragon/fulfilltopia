@@ -4,7 +4,8 @@
   "description": "Fulfilltopia Soap SDK for Node.js",
   "main": "index.js",
   "dependencies": {
-    "request": "*"
+    "request": "*",
+    "xml2js": "0.4.17"
   },
   "homepage": "https://github.com/kickthedragon/fulfilltopia",
   "engines": {

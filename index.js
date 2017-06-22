@@ -1,4 +1,6 @@
 var request = require('request');
+var parseString = require('xml2js')
+	.parseString;
 var fftopiaSDK = module.exports = function(rhu, username, password, debug, handler) {
 	this.username = username;
 	this.password = password;
@@ -34,7 +36,15 @@ fftopiaSDK.prototype.getOrder = function(orderId, callback) {
 			</GetOrderInfo>\
 			</soap:Body>\
 			</soap:Envelope>'
-	}, callback);
+	}, (err, result, body) => {
+		if (!err) {
+			parseString(body, (err, result) => {
+				return callback(err, result);
+			});
+		} else {
+			return callback(err, result, null);
+		}
+	});
 };
 
 
