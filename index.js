@@ -38,7 +38,7 @@ fftopiaSDK.prototype.getOrder = function(orderId, callback) {
 	}, (err, request, body) => {
 		if (!err) {
 			var json = parser.toJson(body);
-			return callback(err, JSON.parse(json)['soap:Envelope']['soap:Body']['GetOrderInfoResponse']['GetOrderInfoResult']);
+			return callback(err, JSON.parse(json)['soap:Envelope']['soap:Body']['GetOrderInfoResponse']['GetOrderInfoResult']['OrdHead']);
 		} else {
 			return callback(err, request);
 		}
