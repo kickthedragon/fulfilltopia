@@ -1,23 +1,23 @@
 var request = require('request');
 var parser = require('xml2json');
 var fftopiaSDK = module.exports = function(rhu, username, password, debug, handler) {
-	this.username = username;
-	this.password = password;
-	this.uri = 'https://' + rhu + '.veracore.com/pmomsws/oms.asmx';
-	this.responseHandler = handler || function() {};
-	this.debug = debug;
+  this.username = username;
+  this.password = password;
+  this.uri = 'https://' + rhu + '.veracore.com/pmomsws/oms.asmx';
+  this.responseHandler = handler || function() {};
+  this.debug = debug;
 };
 
 fftopiaSDK.prototype.getOrder = function(orderId, callback) {
-	var re = this.debug ? 'GetOrderInfo' : '';
-	request({
-		method: 'POST',
-		headers: {
-			'SOAPAction': 'http://omscom/GetOrderInfo',
-			'Content-Type': 'text/xml; charset=utf-8'
-		},
-		uri: this.uri,
-		body: '<?xml version="1.0" encoding="utf-8"?>\
+  var re = this.debug ? 'GetOrderInfo' : '';
+  request({
+    method: 'POST',
+    headers: {
+      'SOAPAction': 'http://omscom/GetOrderInfo',
+      'Content-Type': 'text/xml; charset=utf-8'
+    },
+    uri: this.uri,
+    body: '<?xml version="1.0" encoding="utf-8"?>\
 		<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">\
 			<soap:Header>\
 				<DebugHeader xmlns="http://omscom/">\
@@ -35,20 +35,20 @@ fftopiaSDK.prototype.getOrder = function(orderId, callback) {
 			</GetOrderInfo>\
 			</soap:Body>\
 			</soap:Envelope>'
-	}, (err, request, body) => {
-		if (!err) {
-			var json = parser.toJson(body);
-			return callback(err, JSON.parse(json)['soap:Envelope']['soap:Body']['GetOrderInfoResponse']['GetOrderInfoResult']);
-		} else {
-			return callback(err, request);
-		}
-	});
+  }, (err, request, body) => {
+    if (!err) {
+      var json = parser.toJson(body);
+      return callback(err, JSON.parse(json)['soap:Envelope']['soap:Body']['GetOrderInfoResponse']['GetOrderInfoResult']);
+    } else {
+      return callback(err, request);
+    }
+  });
 };
 
 
 fftopiaSDK.prototype.addOrder = function(cMap, callback) {
-	var priceClass = cMap.priceClass ? cMap.priceClass : 'Default';
-	var top = '<?xml version="1.0" encoding="utf-8"?>\
+  var priceClass = cMap.priceClass ? cMap.priceClass : 'Default';
+  var top = '<?xml version="1.0" encoding="utf-8"?>\
 	<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">\
 	<soap:Header>\
 		<DebugHeader xmlns="http://omscom/">\
@@ -66,7 +66,7 @@ fftopiaSDK.prototype.addOrder = function(cMap, callback) {
 					<Header>\
 						<ID>' + cMap.orderId + '</ID>\
 						<EntryDate>' + new Date()
-		.toISOString() + '</EntryDate>\
+    .toISOString() + '</EntryDate>\
 							<OrderEntryView>\
 								<Description></Description>\
 							</OrderEntryView>\
@@ -76,9 +76,9 @@ fftopiaSDK.prototype.addOrder = function(cMap, callback) {
 							<IpAddress></IpAddress>\
 							<ApprovalComments>' + cMap.approvalComments + '</ApprovalComments>\
 							<InsertDate>' + new Date()
-		.toISOString() + '</InsertDate>\
+    .toISOString() + '</InsertDate>\
 							<UTCEntryDate>' + new Date()
-		.toISOString() + '</UTCEntryDate>\
+    .toISOString() + '</UTCEntryDate>\
 					</Header>\
 					<Money>\
 						<PriceClass>\
@@ -161,10 +161,10 @@ fftopiaSDK.prototype.addOrder = function(cMap, callback) {
 						</BillTo>\
 						<Offers>';
 
-	var offers = '';
+  var offers = '';
 
-	for (var cnt = 0; cnt < cMap.offers.length; cnt++) {
-		offers += '<OfferOrdered>\
+  for (var cnt = 0; cnt < cMap.offers.length; cnt++) {
+    offers += '<OfferOrdered>\
 					<Offer>\
 						<Header>\
 							<ID>' + cMap.offers[cnt].offerId + '</ID>\
@@ -179,18 +179,25 @@ fftopiaSDK.prototype.addOrder = function(cMap, callback) {
 					<ShippingHandling>' + cMap.offers[cnt].shippingHandling + '</ShippingHandling>\
 					<Discounts>' + cMap.offers[cnt].discounts + '</Discounts>\
 				</OfferOrdered>';
-	}
+  }
 
-	var bottom = '</Offers></order></AddOrder></soap:Body></soap:Envelope>';
+  var bottom = '</Offers></order></AddOrder></soap:Body></soap:Envelope>';
 
-	var body = top + offers + bottom;
-	request({
-		method: 'POST',
-		headers: {
-			'SOAPAction': 'http://omscom/AddOrder',
-			'Content-Type': 'text/xml; charset=utf-8'
-		},
-		uri: this.uri,
-		body
-	}, callback);
+  var body = top + offers + bottom;
+  request({
+    method: 'POST',
+    headers: {
+      'SOAPAction': 'http://omscom/AddOrder',
+      'Content-Type': 'text/xml; charset=utf-8'
+    },
+    uri: this.uri,
+    body
+  }, (err, request, body) => {
+    if (!err) {
+      var json = parser.toJson(body);
+      return callback(err, JSON.parse(json)['soap:Envelope']['soap:Body']['AddOrderResponse']['AddOrderResult']);
+    } else {
+      return callback(err, request);
+    }
+  });
 };
