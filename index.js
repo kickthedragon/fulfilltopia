@@ -38,7 +38,7 @@ fftopiaSDK.prototype.getOrder = function(orderId, callback) {
   }, (err, request, body) => {
     if (!err) {
       var json = parser.toJson(body);
-      return callback(err, JSON.parse(json)['soap:Envelope']['soap:Body']['GetOrderInfoResponse']['GetOrderInfoResult']);
+      return callback(err, JSON.parse(json)['soap:Envelope']['soap:Body']['GetOrderInfoResponse']);
     } else {
       return callback(err, request);
     }
@@ -195,7 +195,7 @@ fftopiaSDK.prototype.addOrder = function(cMap, callback) {
   }, (err, request, body) => {
     if (!err) {
       var json = parser.toJson(body);
-      return callback(err, JSON.parse(json)['soap:Envelope']['soap:Body']['AddOrderResponse']['AddOrderResult']);
+      return callback(err, JSON.parse(json)['soap:Envelope']['soap:Body']['AddOrderResponse']);
     } else {
       return callback(err, request);
     }
