@@ -43,8 +43,8 @@ fftopiaSDK.prototype.getOrder = function(orderId, callback) {
         result = JSON.parse(json)['soap:Envelope']['soap:Body']['GetOrderInfoResponse']['GetOrderInfoResult'];
       } catch (e) {
         result = e;
+        return callback(err, result);
       }
-      return callback(err, e);
     } else {
       return callback(err, request);
     }
@@ -206,8 +206,8 @@ fftopiaSDK.prototype.addOrder = function(cMap, callback) {
         result = JSON.parse(json)['soap:Envelope']['soap:Body']['AddOrderResponse']['AddOrderResult'];
       } catch (e) {
         result = e;
+        return callback(err, result);
       }
-      return callback(err, result);
     } else {
       return callback(err, request);
     }
